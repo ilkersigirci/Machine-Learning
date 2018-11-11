@@ -35,7 +35,7 @@ class Preprocessor:
         for i in noPunc:
             if i not in stopWords:
                 noPunc_Stop.append(i)
-
+        return noPunc_Stop;
 
     def _tokenize(self, sentence):
         """Tokenizes given string.
@@ -70,9 +70,9 @@ class Preprocessor:
         :return: string with processed version
         """
         # TODO: Implement this method
-        self._tokenize(document.lower());
         
-        pass
+        return self._stem(self._remove_puncs_numbers_stop_words(self._tokenize(document.lower())));
+        
 
 
     def preprocess(self):

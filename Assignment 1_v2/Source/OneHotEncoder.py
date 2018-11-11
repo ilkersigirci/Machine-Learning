@@ -11,7 +11,16 @@ class OneHotEncoder:
         :return: None
         """
         # TODO: Implement this method
-        pass
+        for i in X:
+            result=0
+            for j in self.tags:
+                if(i==j):
+                    result=1
+                    break
+            if(result): continue
+            self.tags.append(i)        
+            
+       
 
     def fit_transform(self,X):
         """Calls fit and transform methods respectively with X.
@@ -20,7 +29,9 @@ class OneHotEncoder:
         :return: numpy array of one-hot vectors for each element in X
         """
         # TODO: Implement this method
-        pass
+        self.fit(X)
+        return self.transform(X)
+        
 
     def transform(self, X):
         """Converts each element in the list into their one-hot representations
@@ -29,14 +40,23 @@ class OneHotEncoder:
         :return: numpy array of one-hot vectors for each element in X
         """
         # TODO: Implement this method
-        pass
+        sLabels=len(X)
+        sTags=len(self.tags)
+        result=np.zeros((sLabels,sTags),dtype=int)
+
+        for i in range(sLabels):
+            for j in range(sTags):
+                if(X[i]==self.tags[j]):
+                    result[i][j]=1
+        return result
+        
 
     def get_feature_names(self):
         """Returns the tags
         :return: tags
         """
         # TODO: Implement this method
-        pass
+        return self.tags
 
     def decode(self, one_hot_vector):
         """Decodes given one-hot-vector into its value.
@@ -45,8 +65,11 @@ class OneHotEncoder:
         :return: corresponding element in self.tags
         """
         # TODO: Implement this method
-        pass
+        for i in range(len(one_hot_vector)):
+            if(one_hot_vector[i]):
+                return self.tags[i]
 
+        
 if __name__=="__main__":
     o = OneHotEncoder()
     train_labels = ["Action","Comedy","Crime","Comedy","Crime","Musical","Action"]
