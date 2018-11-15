@@ -21,6 +21,21 @@ class Vectorizer:
         """
         self.document_count = len(raw_documents)
         # TODO: Implement this method
+        tokenized=[]
+        c=Counter()
+        size=len(raw_documents)
+        self.vocabulary=[]
+        for i in raw_documents:    #tokenized
+            tokenized.append(nltk.word_tokenize(i))
+        for i in range(size):   #remove duplicates
+            tokenized[i]=list(set(tokenized[i]))
+        for i in tokenized: #count
+            c.update(i)
+        for i in c:
+            count=c[i]/float(size)
+            length=len(i)
+            if(count>=self.min_df and count<=self.max_df and length>=self.min_word_length):
+                self.vocabulary.append(i)
         
         return self.vocabulary
 
