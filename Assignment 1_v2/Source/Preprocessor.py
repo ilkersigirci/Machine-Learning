@@ -71,7 +71,7 @@ class Preprocessor:
         """
         # TODO: Implement this method
         
-        return self._stem(self._remove_puncs_numbers_stop_words(self._tokenize(document.lower())));
+        return ' '.join(self._stem(self._remove_puncs_numbers_stop_words(self._tokenize(document.lower()))));
         
 
 

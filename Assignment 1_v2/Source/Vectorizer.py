@@ -21,7 +21,8 @@ class Vectorizer:
         """
         self.document_count = len(raw_documents)
         # TODO: Implement this method
-        pass
+        
+        return self.vocabulary
 
     def _transform(self, raw_document, method):
         """Creates a feature vector for given raw_document according to vocabulary.
