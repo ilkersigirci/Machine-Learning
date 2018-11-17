@@ -62,10 +62,11 @@ class Vectorizer:
                     continue
                 freq = self.term_df_dict[word]*self.document_count
                 idf = math.log((1+self.document_count)/(1+freq)) + 1
-                tf = 0
+                """ tf = 0
                 for i in range(len(temp)):
                     if temp[i] == word:
-                        tf+=1
+                        tf+=1 """
+                tf=raw_document.count(word)
                 result[self.vocabulary.index(word)] = tf*idf
             n = np.linalg.norm(result)
             for i in range(len(result)):

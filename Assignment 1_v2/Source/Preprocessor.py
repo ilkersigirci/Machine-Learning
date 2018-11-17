@@ -48,16 +48,21 @@ class Preprocessor:
         """
         # TODO: Implement this method   
         noPunc=[]
-        noPunc_Stop=[]
+        noPunc_Num=[]
+        noPunc_Num_Stop=[]
 
         for i in tokens:
-            new_i=i.translate(None, string.punctuation)
+            new_i=i.encode('utf-8').translate(None,string.punctuation)
             noPunc.append(new_i)
 
         for i in noPunc:
+            if i.isalpha():
+                noPunc_Num.append(i)
+        for i in noPunc_Num:
             if i not in self.stop_words:
-                noPunc_Stop.append(i)
-        return noPunc_Stop;
+                noPunc_Num_Stop.append(i)
+       
+        return noPunc_Num_Stop;
 
     def _tokenize(self, sentence):
         """Tokenizes given string.
@@ -142,5 +147,11 @@ if __name__=="__main__":
                 - Aggressive.
                 Yeah, aggressive.
                 Is that it?"""
-    p = Preprocessor()
-    print p.preprocess_document(text)
+
+  
+  
+    #p = Preprocessor()
+    #print p.preprocess_document(text)
+
+    p=Preprocessor()
+    p.preprocess()

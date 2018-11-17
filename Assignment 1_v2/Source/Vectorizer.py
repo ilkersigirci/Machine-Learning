@@ -11,6 +11,7 @@ class Vectorizer:
         self.max_df=max_df
         self.min_df=min_df
         self.term_df_dict = {}
+        np.set_printoptions(threshold=np.nan)
 
     def fit(self, raw_documents):
         """Generates vocabulary for feature extraction. Ignores words shorter than min_word_length and document frequency
@@ -50,7 +51,37 @@ class Vectorizer:
         :return: numpy array as feature vector
         """
         # TODO: Implement this method
-        pass
+        row=len(self.vocabulary)
+        token=nltk.tokenize.word_tokenize(raw_document)
+        result=np.zeros(row,dtype=float)
+        if method=="existance":
+            for i in token:
+                if i in self.vocabulary:
+                    result[self.vocabulary.index(i)]=1
+        print result
+        if method=="count":
+            for i in token:
+                if i in self.vocabulary:
+                    #result[self.vocabulary.index(i)]++ calismiyor
+                    result[self.vocabulary.index(i)]+=1
+
+        """ TF-IDF(term, document) = TF(term, document)*IDF(term)
+        TF(term, document) = Number of times term appears in document
+        IDF(term) = log e ( 1 + Total number of documents /
+                            1 + Total number of documents where term contained
+                          )+1 """       
+        
+        if method=="tf-idf":
+            for i in token:
+                if i in self.vocabulary:
+                    totalWord=self.term_df_dict[i]*self.document_count
+                    idf=math.log((1+self.document_count)/(1+totalWord))+1
+                    tf=raw_document.count(i)
+                    tfidf=tf*idf
+                    result[self.vocabulary.index(i)]=tfidf
+                    norm=np.linalg.norm(result)
+                    result=result/norm
+        return result
 
     def transform(self, raw_documents, method="tf-idf"):
         """For each document in raw_documents calls _transform and returns array of arrays.
@@ -60,7 +91,12 @@ class Vectorizer:
         :return: numpy array of feature-vectors
         """
         # TODO: Implement this method
-        pass
+        #row=len(raw_documents)
+        column=len(self.vocabulary) 
+        vector=np.zeros((self.document_count,column),dtype=float)
+        for i in range(self.document_count):
+            vector[i]=self._transform(raw_documents[i],method)
+        return vector
 
     def fit_transform(self, raw_documents, method="tf-idf"):
         """Calls fit and transform methods respectively.
@@ -70,7 +106,8 @@ class Vectorizer:
         :return: numpy array of feature-vectors
         """
         # TODO: Implement this method
-        pass
+        self.fit(raw_documents)
+        return self.transform(raw_documents,method)
 
     def get_feature_names(self):
         """Returns vocabulary.
@@ -99,11 +136,11 @@ if __name__=="__main__":
      "and this is the third one",
      "is this the first document",
  ]
-    v.fit(contents)
+    """ v.fit(contents)
     print v.get_feature_names()
     existance_vector = v.transform(contents, method="existance")        
     print existance_vector
     count_vector = v.transform(contents, method="count")        
     print count_vector
     tf_idf_vector = v.transform(contents, method="tf-idf")
-    print tf_idf_vector
+    print tf_idf_vector """

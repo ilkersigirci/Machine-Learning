@@ -16,19 +16,40 @@ for i in range(size):   #remove duplicates
     setTokenized.append(list(set(tokenized[i])))
 row=len(contents)
 column=len(vocabulary)  #self.vocabulary 
-result=np.zeros((row,column),dtype=int)
+vector=np.zeros((row,column),dtype=int)
 
-""" for i in range(row):
-    for j in range(column):
-        if(tokenized[i]==vocabulary[j]):
-            result[i][j]=1 """
-
-for i in tokenized:
-    for j in i:
-        print j
 
 
                 
 print result
+
+
+
+        temp = nltk.tokenize.word_tokenize(raw_document)
+        result = np.zeros((len(self.vocabulary)))
+        if method == "existance":
+            for word in temp:
+                if word in self.vocabulary:
+                    result[self.vocabulary.index(word)] = 1
+        elif method == "count":
+            for word in temp:
+                if word in self.vocabulary:
+                    result[self.vocabulary.index(word)] +=1
+        elif method == "tf-idf":
+            for word in temp:
+                if word not in self.vocabulary:
+                    continue
+                freq = self.term_df_dict[word]*self.document_count
+                idf = math.log((1+self.document_count)/(1+freq)) + 1
+                tf = 0
+                for i in range(len(temp)):
+                    if temp[i] == word:
+                        tf+=1
+                result[self.vocabulary.index(word)] = tf*idf
+            n = np.linalg.norm(result)
+            for i in range(len(result)):
+                result[i] = result[i]/n    
+        return result
+
 
 

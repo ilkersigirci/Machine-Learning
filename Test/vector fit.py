@@ -30,7 +30,7 @@ for i in contents:    #tokenized
 for i in range(size):   #remove duplicates
     setTokenized.append(list(set(tokenized[i])))
 
-for i in tokenized:
+for i in setTokenized:
     c.update(i)
 
 for i in c:
@@ -43,5 +43,5 @@ for i in c:
     if i in vocabulary:
         term_df_dict[i]=c[i]/float(size)
 
-print vocabulary
-print term_df_dict
+""" print vocabulary
+print term_df_dict """

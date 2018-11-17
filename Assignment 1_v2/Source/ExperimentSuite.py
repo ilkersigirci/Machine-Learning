@@ -57,6 +57,15 @@ class ExperimentSuite:
         # TODO: Add output layer with softmax activation function
         # TODO: Compile the model with given loss and metrics
         # TODO: Fit the model with given train data, epoch and tensorboard callback
+        outputNum=len(self.train_y)
+        layerNum=len(layers)
+        for i in range(layerNum):
+            model.add(tf.keras.layers.Dense(layers[i],activation))
+
+        model.add(tf.keras.layers.Dense(outputNum,activation='softmax'))        
+        model.compile(tf.train.AdamOptimizer(),loss,metrics)
+        model.fit(train_x,train_y,epoch,callbacks=[tbCallBack],verbose=2)
+
 
         evaluation = model.evaluate(test_x, test_y, verbose=0)
         print "Activation function:", activation.__name__
