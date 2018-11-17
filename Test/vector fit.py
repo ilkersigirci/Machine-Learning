@@ -12,22 +12,13 @@ contents =[
 # and third one second document first
 vocabulary=[]
 tokenized=[]
+setTokenized=[]
+term_df_dict={}
 c=Counter()
 min_word_length=3
-mindf=0.25
-maxdf=0.75
+mindf=0
+maxdf=1
 size=len(contents)
-"""
-
-lengthWords=len(words)
-for i in range(lengthWords):
-    count=0
-    for j in range(lengthWords):
-        if(words[i]==words[j]): count=count+1
-    
-    count=count/float(lengthContents)
-    if(count>=mindf and count<=maxdf):
-        vocabulary.append(words[i]) """
 
 """ counted = Counter(map(tuple,tokenized))
 multituples = [tuple(l) for l in tokenized]
@@ -37,7 +28,7 @@ for i in contents:    #tokenized
     tokenized.append(nltk.word_tokenize(i))
 
 for i in range(size):   #remove duplicates
-    tokenized[i]=list(set(tokenized[i]))
+    setTokenized.append(list(set(tokenized[i])))
 
 for i in tokenized:
     c.update(i)
@@ -47,6 +38,10 @@ for i in c:
     length=len(i)
     if(count>=mindf and count<=maxdf and length>=min_word_length):
         vocabulary.append(i)
-    
+
+for i in c:
+    if i in vocabulary:
+        term_df_dict[i]=c[i]/float(size)
 
 print vocabulary
+print term_df_dict
