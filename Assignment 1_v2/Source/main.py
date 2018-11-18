@@ -14,6 +14,6 @@ if __name__ == "__main__":
     es = ExperimentSuite()
     v=Vectorizer(max_df=0.97,min_df=0.5)
     print datetime.now()
-    v1=v.fit_transform(es.train_contents,"count")
+    v1=v.fit_transform(es.train_contents,"existance")
     print v1
     print datetime.now()

@@ -51,9 +51,15 @@ class Preprocessor:
         noPunc_Num=[]
         noPunc_Num_Stop=[]
 
+        """for i in tokens:
+            #new_i=i.encode('utf-8').translate(None,string.punctuation)
+            new_i=i.translate(string.maketrans("",""), string.punctuation)
+            noPunc.append(new_i)"""
+
         for i in tokens:
-            new_i=i.encode('utf-8').translate(None,string.punctuation)
+            new_i="".join((char for char in i if char not in string.punctuation))
             noPunc.append(new_i)
+
 
         for i in noPunc:
             if i.isalpha():
@@ -150,8 +156,8 @@ if __name__=="__main__":
 
   
   
-    #p = Preprocessor()
-    #print p.preprocess_document(text)
+    p = Preprocessor()
+    print p.preprocess_document(text)
 
-    p=Preprocessor()
-    p.preprocess()
+    #p=Preprocessor()
+    #p.preprocess()
