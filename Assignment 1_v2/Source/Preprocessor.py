@@ -5,7 +5,7 @@ import os
 from nltk.corpus import stopwords
 import codecs
 import errno
-
+from datetime import datetime
 import string
 
 
@@ -16,29 +16,6 @@ class Preprocessor:
         nltk.download("stopwords")
         nltk.download("punkt")
         self.stop_words = set(stopwords.words('english'))
-
-    """result = []
-        size = len(tokens)
-        i=0
-        while i < size:
-            s = len(tokens[i])
-            j = 0
-            flag = True
-            while j < s:
-                if tokens[i][j] in string.punctuation:
-                    tokens[i] = tokens[i][:j] + tokens[i][j+1:]
-                    s-=1
-                    flag = False
-                else:
-                    flag = True
-                if flag:
-                    j+=1
-            i+=1
-                    
-        result2 = []
-        result2 = [x for x in tokens if x.isalpha()]
-        result = [x for x in result2 if x not in self.stop_words]
-        return result """
 
     def _remove_puncs_numbers_stop_words(self, tokens):
         """Remove punctuations in the words, words including numbers and words in the stop_words list.
@@ -77,7 +54,7 @@ class Preprocessor:
         :return: list of string with tokens
         """
         # TODO: Implement this method
-        return nltk.word_tokenize(sentence);
+        return nltk.word_tokenize(sentence)
         
 
     def _stem(self, tokens):
@@ -103,8 +80,11 @@ class Preprocessor:
         :return: string with processed version
         """
         # TODO: Implement this method
+        token=self._tokenize(document.lower())
+        cleanToken=self._remove_puncs_numbers_stop_words(token)
+        result=' '.join(self._stem(cleanToken))
         
-        return ' '.join(self._stem(self._remove_puncs_numbers_stop_words(self._tokenize(document.lower()))));
+        return result
         
 
 
@@ -156,8 +136,10 @@ if __name__=="__main__":
 
   
   
-    p = Preprocessor()
-    print p.preprocess_document(text)
-
-    #p=Preprocessor()
-    #p.preprocess()
+    """ p = Preprocessor()
+    print p.preprocess_document(text) """
+    
+    print datetime.now()
+    p=Preprocessor()
+    p.preprocess()
+    print datetime.now()

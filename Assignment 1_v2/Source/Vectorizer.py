@@ -58,7 +58,6 @@ class Vectorizer:
             for i in token:
                 if i in self.vocabulary:
                     result[self.vocabulary.index(i)]=1
-        print result
         if method=="count":
             for i in token:
                 if i in self.vocabulary:
@@ -69,18 +68,19 @@ class Vectorizer:
         TF(term, document) = Number of times term appears in document
         IDF(term) = log e ( 1 + Total number of documents /
                             1 + Total number of documents where term contained
-                          )+1 """       
+                          )+1 """
         
         if method=="tf-idf":
             for i in token:
                 if i in self.vocabulary:
                     totalWord=self.term_df_dict[i]*self.document_count
+                    tf=token.count(i)/float(len(token))
                     idf=math.log((1+self.document_count)/(1+totalWord))+1
-                    tf=raw_document.count(i)
                     tfidf=tf*idf
                     result[self.vocabulary.index(i)]=tfidf
-                    norm=np.linalg.norm(result)
-                    result=result/norm
+            norm=np.linalg.norm(result)
+            if norm != 0.0:
+                result=result/float(norm)
         return result
 
     def transform(self, raw_documents, method="tf-idf"):
@@ -93,8 +93,9 @@ class Vectorizer:
         # TODO: Implement this method
         #row=len(raw_documents)
         column=len(self.vocabulary) 
-        vector=np.zeros((self.document_count,column),dtype=float)
-        for i in range(self.document_count):
+        vector=np.zeros((len(raw_documents),column),dtype=float)
+        #for i in range(self.document_count):
+        for i in range(len(raw_documents)):
             vector[i]=self._transform(raw_documents[i],method)
         return vector
 
@@ -129,18 +130,18 @@ class Vectorizer:
         return sorted(self.term_df_dict.iteritems(), key=lambda (k, v): (v, k), reverse=True)
 
 if __name__=="__main__":
-    v = Vectorizer(min_df=0, max_df=1)
+    v = Vectorizer(min_df=0.25, max_df=0.75)
     contents = [
      "this is the first document",
      "this document is the second document",
      "and this is the third one",
      "is this the first document",
  ]
-    """ v.fit(contents)
+    v.fit(contents)
     print v.get_feature_names()
     existance_vector = v.transform(contents, method="existance")        
     print existance_vector
     count_vector = v.transform(contents, method="count")        
     print count_vector
     tf_idf_vector = v.transform(contents, method="tf-idf")
-    print tf_idf_vector """
+    print tf_idf_vector

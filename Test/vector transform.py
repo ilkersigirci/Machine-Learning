@@ -7,7 +7,7 @@ contents =[
 "is this the first document",
 ]
 vocabulary=['and', 'third', 'one', 'second', 'document', 'first']
-size=len(contents)
+""" size=len(contents)
 tokenized=[]
 setTokenized=[]
 for i in contents:    #tokenized
@@ -50,6 +50,11 @@ print result
             for i in range(len(result)):
                 result[i] = result[i]/n    
         return result
+ """
 
 
+a="this is forgive the give"
+print a.count("give")
 
+temp = nltk.tokenize.word_tokenize(a)
+print temp.count("give")
