@@ -87,6 +87,6 @@ if __name__=='__main__':
     print(neigh.predict_proba([[n]], method='classical'))
     # [[0.66666667 0.33333333]]
     print(neigh.predict_proba([[n]], method='weighted'))
-    # [[0.75089392 0.24910608]]
+    # [[0.92436975 0.07563025]]
     print(neigh.predict_proba([[n]], method='validity'))
-    # [[0.75697674 0.24302326]]
+    # [[0.92682927 0.07317073]]

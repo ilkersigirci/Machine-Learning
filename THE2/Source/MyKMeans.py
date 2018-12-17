@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from scipy.spatial import distance
+from sklearn.cluster import KMeans
 
 EPSILON = 0.0001
 
+# numpy.sqrt(numpy.sum((x-y)**2))
+# numpy.linalg.norm(a-b)
+# distance.cdist([[1,2]], arr, 'euclidean')
 
 class MyKMeans:
     """K-Means clustering similar to sklearn 
@@ -66,7 +71,43 @@ class MyKMeans:
         ----------
         self.cluster_centers : array-like, shape=(n_clusters, n_features)
         """
-        pass
+        array = np.zeros((self.n_clusters,X.shape[1]))
+
+        if(self.init_method == "random"):            
+            j = 0
+            randNumArray = self.random_state.permutation(X.shape[0])[:self.n_clusters]
+
+            for i in randNumArray:
+                array[j] = X[i]
+                j = j+1
+        
+
+        if(self.init_method == "kmeans++"):
+            array = []
+            array2 = []
+            randNum = self.random_state.randint(X.shape[0])            
+            #array[0] = X[randNum]
+            array.append(X[randNum])
+            #array2.append(X[randNum])
+            for i in range(self.n_clusters-1):
+                eucSum = 0
+                eucMax = 0
+                for j in X:
+                    #if j in array:
+                        #continue
+                    distArr = distance.cdist([j], array, 'euclidean')
+                    #distArr = distance.cdist([[1,0]], array, 'euclidean')
+                    eucSum = distArr.sum()
+                    if(eucSum) > eucMax:
+                        #array2.append(j)
+                        array2 = j
+                        eucMax = eucSum
+
+                array.append(array2)
+
+        return np.array(array,dtype=float)
+                    
+        
 
     def predict(self, X):
         """Predict the closest cluster each sample in X belongs to.
@@ -104,6 +145,7 @@ if __name__ == "__main__":
     if __name__ == "__main__":
         X = np.array([[1, 2], [1, 4], [1, 0],
                       [4, 2], [4, 4], [4, 0]])
+
         kmeans = MyKMeans(n_clusters=2, random_state=0, init_method='kmeans++')
         print kmeans.initialize(X)
         # [[4. 4.]
@@ -112,11 +154,15 @@ if __name__ == "__main__":
         print kmeans.initialize(X)
         # [[4. 0.]
         #  [1. 0.]]
-        kmeans.fit(X)
+        
+        
+        
+        
+        """ kmeans.fit(X)
         print kmeans.labels
         # array([1, 1, 1, 0, 0, 0])
         print kmeans.predict([[0, 0], [4, 4]])
         # array([1, 0])
         print kmeans.cluster_centers
         # array([[4, 2],
-        #       [1, 2]])
+        #       [1, 2]]) """

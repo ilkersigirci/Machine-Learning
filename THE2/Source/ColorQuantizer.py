@@ -50,12 +50,14 @@ class ColorQuantizer:
         """
         pass
         
-    def quantize_image(self, path, path_to_save):
+    def quantize_image(self, path, weigths_path, path_to_save):
         """Quantizes the given image to the number of colors given in the constructor.
         
         Parameters
         ----------
         path : string, path of the jpeg file
+        weigths_path : string, path of txt file to export weights
+        path_to_save : string, path of the output image file
         """
         pass
         
