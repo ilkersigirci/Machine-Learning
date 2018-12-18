@@ -60,7 +60,6 @@ class MyKMeans:
         self : MyKMeans
         """
         flag = 0
-        #self.labels = np.arange(X.shape[0])
         self.labels = np.zeros(X.shape[0])
         for i in range(X.shape[0]):
             distArr = distance.cdist([X[i]], self.cluster_centers, 'euclidean')
@@ -76,7 +75,9 @@ class MyKMeans:
                         sumVal += X[j]
                         number += 1
                 newCent = sumVal / float(number)
-                if abs(self.cluster_centers[i] - newCent) < EPSILON:
+                distArr2 = distance.cdist([self.cluster_centers[i]], [newCent], 'euclidean')
+                #if abs(self.cluster_centers[i] - newCent) < EPSILON:
+                if distArr2[0] < EPSILON:
                     flag = 1
                 self.cluster_centers[i] = newCent
             if flag == 1:
