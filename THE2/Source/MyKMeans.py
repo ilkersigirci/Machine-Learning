@@ -59,7 +59,29 @@ class MyKMeans:
         ----------
         self : MyKMeans
         """
-        pass
+        flag = 0
+        #self.labels = np.arange(X.shape[0])
+        self.labels = np.zeros(X.shape[0])
+        for i in range(X.shape[0]):
+            distArr = distance.cdist([X[i]], self.cluster_centers, 'euclidean')
+            minIndex = np.argmin(distArr)
+            self.labels[i] = minIndex
+        for k in range(self.max_iter):
+            for i in range(len(self.cluster_centers)):            
+                sumVal = 0
+                number = 0
+                flag = 0
+                for j in range(X.shape[0]):
+                    if i == self.labels[j]:
+                        sumVal += X[j]
+                        number += 1
+                newCent = sumVal / float(number)
+                if abs(self.cluster_centers[i] - newCent) < EPSILON:
+                    flag = 1
+                self.cluster_centers[i] = newCent
+            if flag == 1:
+                break
+
 
     def initialize(self, X):
         """ Initialize centroids according to self.init_method
@@ -105,7 +127,8 @@ class MyKMeans:
 
                 array.append(array2)
 
-        return np.array(array,dtype=float)
+        self.cluster_centers = np.array(array,dtype=float)
+        return self.cluster_centers
                     
         
 
@@ -147,7 +170,7 @@ if __name__ == "__main__":
                       [4, 2], [4, 4], [4, 0]])
 
         kmeans = MyKMeans(n_clusters=2, random_state=0, init_method='kmeans++')
-        print kmeans.initialize(X)
+        #print kmeans.initialize(X)
         # [[4. 4.]
         #  [1. 0.]]
         kmeans = MyKMeans(n_clusters=2, random_state=0, init_method = 'random')
@@ -155,14 +178,11 @@ if __name__ == "__main__":
         # [[4. 0.]
         #  [1. 0.]]
         
-        
-        
-        
-        """ kmeans.fit(X)
+        kmeans.fit(X)
         print kmeans.labels
         # array([1, 1, 1, 0, 0, 0])
-        print kmeans.predict([[0, 0], [4, 4]])
+        #print kmeans.predict([[0, 0], [4, 4]])
         # array([1, 0])
-        print kmeans.cluster_centers
+        #print kmeans.cluster_centers
         # array([[4, 2],
-        #       [1, 2]]) """
+        #       [1, 2]])
