@@ -3,7 +3,7 @@
 
 import numpy as np
 from scipy.spatial import distance
-from sklearn.cluster import KMeans
+#from sklearn.cluster import KMeans
 
 EPSILON = 0.0001
 

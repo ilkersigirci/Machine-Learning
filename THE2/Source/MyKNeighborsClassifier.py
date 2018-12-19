@@ -58,18 +58,18 @@ class MyKNeighborsClassifier:
                 neighIndexArr = np.argpartition(distArr[0], self.n_neighbors)
                 tempLabels = np.zeros(len(self.distinct_labels))
 
-                for j in range(self.n_neighbors):
+                for j in range(self.n_neighbors+1):
                     neighIndex = neighIndexArr[j]
                     neighLabel = self.labels[neighIndex]
                     dists = distArr[0][neighIndex]
-                    val = self.fitValidity[neighIndex]
-                    #condition check?
-                    tempLabels[neighLabel] += 1 / dists
+                    
+                    if dists != 0:  # neighIndex != i
+                        tempLabels[neighLabel] += 1 / dists
                 
-                #tempLabels = tempLabels / sum(tempLabels)
+                tempLabels = tempLabels / sum(tempLabels)
                 fittedLabel = tempLabels[self.labels[i]]
                 self.fitValidity[i] = fittedLabel
-                
+
             
     def predict(self, X):
         """Predict the class labels for the provided data
@@ -155,19 +155,70 @@ class MyKNeighborsClassifier:
             The class probabilities of the input samples. Classes are ordered
             by lexicographic order.
         """
-        pass
+        if(method == "classical"):
+            classical = [] 
+            for i in range(len(X)):
+                distArr = distance.cdist([X[i]], self.data, 'cityblock') if self.norm == 'l1' else distance.cdist([X[i]], self.data, 'euclidean')
+                neighIndexArr = np.argpartition(distArr[0], self.n_neighbors)
+                tempLabels = np.zeros(len(self.distinct_labels))
+
+                for j in range(self.n_neighbors):
+                    neighIndex = neighIndexArr[j]
+                    neighLabel = self.labels[neighIndex]
+                    tempLabels[neighLabel] += 1
+
+                predictedLabel = tempLabels / sum(tempLabels)
+                classical.append(predictedLabel)
+
+            return classical
+
+        if(method == "weighted"):
+            weighted = [] 
+            for i in range(len(X)):
+                distArr = distance.cdist([X[i]], self.data, 'cityblock') if self.norm == 'l1' else distance.cdist([X[i]], self.data, 'euclidean')
+                neighIndexArr = np.argpartition(distArr[0], self.n_neighbors)
+                tempLabels = np.zeros(len(self.distinct_labels))
+
+                for j in range(self.n_neighbors):
+                    neighIndex = neighIndexArr[j]
+                    neighLabel = self.labels[neighIndex]
+                    dists = distArr[0][neighIndex]
+                    tempLabels[neighLabel] += 1 / (1e-15 + dists)
+
+                predictedLabel = tempLabels / sum(tempLabels)
+                weighted.append(predictedLabel)
+
+            return weighted
+
+        if(method == "validity"):
+            validity = []
+            for i in range(len(X)):
+                distArr = distance.cdist([X[i]], self.data, 'cityblock') if self.norm == 'l1' else distance.cdist([X[i]], self.data, 'euclidean')
+                neighIndexArr = np.argpartition(distArr[0], self.n_neighbors)
+                tempLabels = np.zeros(len(self.distinct_labels))
+
+                for j in range(self.n_neighbors):
+                    neighIndex = neighIndexArr[j]
+                    neighLabel = self.labels[neighIndex]
+                    dists = distArr[0][neighIndex]
+                    val = self.fitValidity[neighIndex]
+                    tempLabels[neighLabel] += val * (1 / (1e-15 + dists))
+
+                predictedLabel = tempLabels / sum(tempLabels)
+                validity.append(predictedLabel)
+
+            return validity        
 
 if __name__=='__main__':
     X = [[0], [1], [2], [3]]
     y = [0, 0, 1, 1]
-    #neigh = MyKNeighborsClassifier(n_neighbors=3, method="validity")
-    neigh = MyKNeighborsClassifier(n_neighbors=3, method="classical")
+    neigh = MyKNeighborsClassifier(n_neighbors=3, method="validity")
     neigh.fit(X, y)
-    neigh.predict(X)
+    #neigh.predict(X)
     n = 0.9
-    #print(neigh.predict_proba([[n]], method='classical'))
+    print(neigh.predict_proba([[n]], method='classical'))
     # [[0.66666667 0.33333333]]
-    #print(neigh.predict_proba([[n]], method='weighted'))
+    print(neigh.predict_proba([[n]], method='weighted'))
     # [[0.92436975 0.07563025]]
-    #print(neigh.predict_proba([[n]], method='validity'))
+    print(neigh.predict_proba([[n]], method='validity'))
     # [[0.92682927 0.07317073]]
