@@ -59,17 +59,16 @@ class MyKMeans:
         ----------
         self : MyKMeans
         """
-        flag = 0
-        self.labels = np.zeros(X.shape[0])
+        self.labels = np.zeros(X.shape[0])        
         for i in range(X.shape[0]):
             distArr = distance.cdist([X[i]], self.cluster_centers, 'euclidean')
             minIndex = np.argmin(distArr)
             self.labels[i] = minIndex
+        temp = self.cluster_centers
         for k in range(self.max_iter):
             for i in range(len(self.cluster_centers)):            
                 sumVal = 0
                 number = 0
-                flag = 0
                 for j in range(X.shape[0]):
                     if i == self.labels[j]:
                         sumVal += X[j]
@@ -77,12 +76,14 @@ class MyKMeans:
                 newCent = sumVal / float(number)
                 distArr2 = distance.cdist([self.cluster_centers[i]], [newCent], 'euclidean')
                 #if abs(self.cluster_centers[i] - newCent) < EPSILON:
-                if distArr2[0] < EPSILON:
-                    flag = 1
-                self.cluster_centers[i] = newCent
-            if flag == 1:
+                #self.cluster_centers[i] = newCent
+                temp[i] = newCent
+            if np.linalg.norm(self.cluster_centers - temp) < EPSILON:
                 break
+            else:
+                self.cluster_centers = temp
 
+        return self
 
     def initialize(self, X):
         """ Initialize centroids according to self.init_method
@@ -110,14 +111,14 @@ class MyKMeans:
             array2 = []
             randNum = self.random_state.randint(X.shape[0])            
             #array[0] = X[randNum]
-            array.append(X[randNum])
+            array.append(X[randNum].tolist())
             #array2.append(X[randNum])
             for i in range(self.n_clusters-1):
                 eucSum = 0
                 eucMax = 0
-                for j in X:
-                    #if j in array:
-                        #continue
+                for j in X: #FIXME:
+                    if j.tolist() in array:
+                        continue
                     distArr = distance.cdist([j], array, 'euclidean')
                     #distArr = distance.cdist([[1,0]], array, 'euclidean')
                     eucSum = distArr.sum()
@@ -147,7 +148,14 @@ class MyKMeans:
         labels : array, shape [n_samples,]
             Index of the cluster each sample belongs to.
         """
-        pass
+        X = np.array(X)
+        self.labels = np.zeros(X.shape[0]) 
+        for i in range(X.shape[0]):
+            distArr = distance.cdist([X[i]], self.cluster_centers, 'euclidean')
+            minIndex = np.argmin(distArr)
+            self.labels[i] = minIndex
+
+        return self.labels
 
     def fit_predict(self, X):
         """Compute cluster centers and predict cluster index for each sample.
@@ -162,7 +170,7 @@ class MyKMeans:
         labels : array, shape [n_samples,]
             Index of the cluster each sample belongs to.
         """
-        pass
+        return self.fit(X).predict(X)
 
 
 if __name__ == "__main__":
@@ -171,7 +179,7 @@ if __name__ == "__main__":
                       [4, 2], [4, 4], [4, 0]])
 
         kmeans = MyKMeans(n_clusters=2, random_state=0, init_method='kmeans++')
-        #print kmeans.initialize(X)
+        print kmeans.initialize(X)
         # [[4. 4.]
         #  [1. 0.]]
         kmeans = MyKMeans(n_clusters=2, random_state=0, init_method = 'random')
@@ -182,8 +190,8 @@ if __name__ == "__main__":
         kmeans.fit(X)
         print kmeans.labels
         # array([1, 1, 1, 0, 0, 0])
-        #print kmeans.predict([[0, 0], [4, 4]])
+        print kmeans.predict([[0, 0], [4, 4]])
         # array([1, 0])
-        #print kmeans.cluster_centers
+        print kmeans.cluster_centers
         # array([[4, 2],
         #       [1, 2]])

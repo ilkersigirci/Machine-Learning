@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#from scipy.ndimage import imread
+
+from scipy import misc
+from PIL import Image
+from sklearn.metrics import pairwise_distances_argmin
+from sklearn.datasets import load_sample_image
+from sklearn.utils import shuffle
+import numpy as np
+
 class ColorQuantizer:
     """Quantizer for color reduction in images. Use MyKMeans class that you implemented.
     
@@ -19,7 +28,8 @@ class ColorQuantizer:
     """
     
     def __init__(self, n_colors=64, random_state=None):
-        pass
+
+        path
     
     def read_image(self, path):
         """Reads jpeg image from given path as numpy array. Stores it inside the
@@ -29,7 +39,10 @@ class ColorQuantizer:
         ----------
         path : string, path of the jpeg file
         """
-        pass
+        #self.image = load_sample_image(path)
+
+        self.image = misc.imread(path)
+
     
     def recreate_image(self, path_to_save):
         """Reacreates image from the trained MyKMeans model and saves it to the
@@ -59,5 +72,24 @@ class ColorQuantizer:
         weigths_path : string, path of txt file to export weights
         path_to_save : string, path of the output image file
         """
+        
+        """ def quantize(raster, n_colors):
+            width, height, depth = raster.shape
+            reshaped_raster = np.reshape(raster, (width * height, depth))
+
+            model = cluster.KMeans(n_clusters=n_colors)
+            labels = model.fit_predict(reshaped_raster)
+            palette = model.cluster_centers_
+
+            quantized_raster = np.reshape(
+                palette[labels], (width, height, palette.shape[1]))
+
+            return quantized_raster """
+
         pass
         
+
+if __name__=='__main__':
+    path ="/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/ankara.jpg"
+    image = ColorQuantizer()
+    image.read_image(path)
