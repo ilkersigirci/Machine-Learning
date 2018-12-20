@@ -69,7 +69,8 @@ class MyKMedoids:
         X : {array-like, sparse matrix}, shape = [n_samples, n_features]
             New data to transform.
         """
-        pass
+        sample = self.random_state.permutation(X.shape[0])[:int(self.sample_ratio*len(X))]
+        return sample
 
     def pam(self, X):
         """
@@ -93,21 +94,20 @@ class MyKMedoids:
             Best medoids found and the cost according to it.
         """
 
-        self.medoids = np.zeros((self.n_clusters,X.shape[1]))
-        self.labels = np.zeros(X.shape[0], dtype = int)
-        randNumArray = self.random_state.permutation(X.shape[0])[:self.n_clusters]
+       
+
+        self.medoids = np.zeros((self.n_clusters,X.shape[1]))        
+        randNumArray = self.random_state.permutation(X.shape[0])[:self.n_clusters] 
         #1
         for i in range(self.n_clusters):
             index = randNumArray[i]
             self.medoids[i] = X[index]
-        #2
-        for i in range(X.shape[0]):
-            distArr = distance.cdist([X[i]], self.medoids, 'euclidean')
-            minIndex = np.argmin(distArr[0])
-            self.labels[i] = minIndex
         
-        #FIXME: cluster olusturma burada galiba?
+        self.clusters = self.generate_clusters(self.medoids, X)
         
+        #calculate cost
+
+
         #3
 
 
@@ -124,11 +124,13 @@ class MyKMedoids:
         clusters : array-like, shape = [n_clusters, elemens_inside_cluster, n_features]
         """
 
-        #FIXME: sample ne ? Gelen data mi?
-
-        clusters = np.zeros((self.n_clusters, ? , 2)) #FIXME:  eleman sayisini nasil bulacagiz?
-        for i in range(n_clusters):
-
+        clusters = []
+        self.labels = np.zeros(X.shape[0], dtype = int)
+        for i in range(samples.shape[0]):
+            distArr = distance.cdist([samples[i]], medoids, 'euclidean')
+            minIndex = np.argmin(distArr[0])
+            self.labels[i] = minIndex
+            
 
 
         return clusters
@@ -206,3 +208,9 @@ if __name__ == "__main__":
     # [array([7., 4.]), array([2., 6.])]
     print kmedoids.min_cost
     # 28.0
+
+
+
+""" In clara method, you will sample with given sample_ratio. You will apply pam
+    to these samples and it will return best_medoids and min_cost. If min_cost
+    is less than current min_cost, then it will be the best_medoids. """
