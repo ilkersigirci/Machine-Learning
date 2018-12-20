@@ -93,7 +93,7 @@ class ColorQuantizer:
         result = []
         cents = self.kmeans.cluster_centers
         for i in range(self.d1*self.d2):
-            result.append(cents[labels[i]])
+            result.append(cents[int(labels[i])])
         self.image = np.array(result)   
         self.recreate_image(path_to_save)
         self.export_cluster_centers(weigths_path)
@@ -101,6 +101,10 @@ class ColorQuantizer:
 
 
 if __name__ == "__main__":
-    if __name__ == "__main__":
-        t = ColorQuantizer()
-        t.quantize_image("../Docs/ankara.jpg","./ankara_cluster_centers.txt","./deneme-ankaradenemerand64.jpg")
+
+    path = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/metu.jpg"
+    centers = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/metu_centers2.txt"
+    save = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/metu2.jpg"
+
+    t = ColorQuantizer()
+    t.quantize_image(path, centers, save)
