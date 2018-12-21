@@ -55,6 +55,13 @@ class MyKMedoids:
         self : MyKMedoids
         """
         
+
+        if self.method == "pam":
+
+            self.best_medoids, self.min_cost = self.pam(X)
+
+        if self.method == "clara":
+            pass
         
         
         
@@ -94,25 +101,49 @@ class MyKMedoids:
             Best medoids found and the cost according to it.
         """
 
-       
+        min_cost = float('inf')       
 
-        self.medoids = np.zeros((self.n_clusters,X.shape[1]))        
+        self.medoids = np.zeros((self.n_clusters,X.shape[1])) 
+        tempMedoids = np.array(self.medoids)      
         randNumArray = self.random_state.permutation(X.shape[0])[:self.n_clusters] 
-        #1
+        
         for i in range(self.n_clusters):
             index = randNumArray[i]
             self.medoids[i] = X[index]
         
         self.clusters = self.generate_clusters(self.medoids, X)
+
+        min_cost = self.calculate_cost(self.medoids, self.clusters)
         
-        #calculate cost
+        """ for i in range(len(self.medoids)):
+            for j in range(len(X)):
+                if X[j] in self.medoids:
+                    continue
+                self.medoids[i], X[j] = X[j], self.medoids[i]
+                tempCost = self.calculate_cost(self.medoids, self.clusters)
+                if tempCost >= min_cost:
+                    self.medoids[i], X[j] = X[j], self.medoids[i] """
+        
+        while True:
+            tempMedoids = np.array(self.medoids)
+            for i in range(len(self.medoids)):
+                for j in range(len(self.clusters)):
+                    for k in range(len(self.clusters[j])):
+                        if self.clusters[j][k] in self.medoids:
+                            continue
+                        self.medoids[i], self.clusters[j][k] = self.clusters[j][k], self.medoids[i]  #swap
+                        tempCost = self.calculate_cost(self.medoids, self.clusters)
+                        if tempCost >= min_cost:
+                            self.medoids[i], self.clusters[j][k] = self.clusters[j][k], self.medoids[i]  # go back original
+                        else:
+                            min_cost = tempCost
 
+            if self.medoids == tempMedoids:
+                break
 
-        #3
+        return self.medoids, min_cost
 
-
-
-    def generate_clusters(self, medoids, samples):
+    def generate_clusters(self, medoids, samples): #FIXME: cluster'in icinde medoid olacak mi?
         """Generates clusters according to distance to medoids. Order
         is same with given medoids array.
         Parameters
@@ -125,17 +156,24 @@ class MyKMedoids:
         """
 
         clusters = []
-        self.labels = np.zeros(X.shape[0], dtype = int)
+        new = []
+        self.labels = np.zeros(samples.shape[0], dtype = int)
         for i in range(samples.shape[0]):
             distArr = distance.cdist([samples[i]], medoids, 'euclidean')
             minIndex = np.argmin(distArr[0])
             self.labels[i] = minIndex
             
+        for i in range(len(medoids)):
+            new = []
+            for j in self.labels:
+                if i == j:
+                    new.append(X[j])
 
+            clusters.append(new)
 
         return clusters
 
-    def calculate_cost(self, medoids, clusters):
+    def calculate_cost(self, medoids, clusters):  #FIXME: herkes kendi cluster'indan sorumlu herhalde
         """Calculates cost of each medoid's cluster with squared euclidean function.
         Parameters
         ----------
@@ -146,11 +184,11 @@ class MyKMedoids:
         cost : float
             total cost of clusters
         """
-        totalCost = np.zeros(self.n_clusters)
+        totalCost = 0
 
-        for i in range(self.n_clusters):
+        for i in range(len(medoids)):
             distArr = distance.cdist(medoids[i], clusters[i], 'euclidean')
-            totalCost[i] = sum(distArr)
+            totalCost += sum(distArr)
 
         return totalCost
 
