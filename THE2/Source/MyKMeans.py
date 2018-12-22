@@ -123,7 +123,7 @@ class MyKMeans:
                     distArr = distance.cdist([j], array, 'euclidean')
                     eucSum = distArr.sum()
                     if(eucSum) > eucMax:
-                        array2 = j
+                        array2 = j.tolist()
                         eucMax = eucSum
 
                 array.append(array2)

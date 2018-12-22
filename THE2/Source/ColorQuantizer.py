@@ -77,10 +77,10 @@ class ColorQuantizer:
         shuffled = np.array(self.image)
         np.random.shuffle(shuffled)
         
-        self.myKmeans = MyKMeans(random_state=self.random_state, n_clusters=self.n_colors, max_iter=800, init_method="random")
+        self.myKmeans = MyKMeans(random_state=self.random_state, n_clusters=self.n_colors, max_iter=600, init_method="random")
         self.initCenter = self.myKmeans.initialize(self.image)
         
-        self.myKmeans.fit(shuffled[:20000])
+        self.myKmeans.fit(shuffled[:7000])
         myLabels = self.myKmeans.predict(self.image)
         myCenters = self.myKmeans.cluster_centers
         self.export_cluster_centers(weigths_path)
@@ -97,8 +97,14 @@ class ColorQuantizer:
         
 
 if __name__=='__main__':
+
     path = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/ankara.jpg"
     centers = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/ankara_centers.txt"
     save = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/ankara1.jpg"
+    
+    """ path = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/metu.jpg"
+    centers = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/metu_centers.txt"
+    save = "/mnt/d/DERS/0000GITHUB/Machine-Learning/THE2/Docs/metu1.jpg" """
+
     img = ColorQuantizer()
     img.quantize_image(path, centers, save)
