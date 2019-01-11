@@ -1,5 +1,5 @@
 import numpy as np
-
+import sys
 
 def forward(transitionPath, estimatePath, observationPath):
     transitionMatrix = np.loadtxt(transitionPath)
@@ -40,7 +40,7 @@ def viterbi(transitionPath, estimatePath, observationPath):
     N = transitionMatrix.shape[0]
     T = observationMatrix.shape[0]
     viterbi = np.zeros((N,T))
-    backPointer = np.zeros((N,T))
+    backPointer = np.zeros((N,T),dtype = int)
     for s in range(1,N-1):
         viterbi[s][0] = transitionMatrix[0][s] * estimateMatrix[s][observationMatrix[0]]
         backPointer[s][0] = 0
@@ -71,15 +71,31 @@ def viterbi(transitionPath, estimatePath, observationPath):
             index = s
     viterbi[N-1][T-1] = myMax
     backPointer[N-1][T-1] = index
+    
+    result = []
+    index = backPointer[N-1][T-1]
+    result.insert(0,index)
+    
+    for i in range(T, 1, -1):
+        index = backPointer[index][i-1]
+        result.insert(0,index)
 
-    print viterbi
-    print backPointer
-
-
+    print result
 
 if __name__ == "__main__":
-    transitionPath = "./transition_matrix.txt"
+    """ transitionPath = "./transition_matrix.txt"
     estimatePath = "./estimate_matrix.txt"
     observationPath = "./observations.txt"
     viterbi(transitionPath, estimatePath, observationPath)
-    forward(transitionPath, estimatePath, observationPath)
+    forward(transitionPath, estimatePath, observationPath) """
+
+    first  = sys.argv[1]
+    second = "./" + sys.argv[2]
+    third  = "./" + sys.argv[3]
+    fourth = "./" + sys.argv[4]
+
+    transitionPath = second
+    estimatePath = third
+    observationPath = fourth
+    if(first == "viterbi") : viterbi(second, third, fourth)
+    if(first == "forward") : forward(second, third, fourth)
