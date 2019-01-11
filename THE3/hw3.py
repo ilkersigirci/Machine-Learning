@@ -71,7 +71,7 @@ def viterbi(transitionPath, estimatePath, observationPath):
             index = s
     viterbi[N-1][T-1] = myMax
     backPointer[N-1][T-1] = index
-    
+
     result = []
     index = backPointer[N-1][T-1]
     result.insert(0,index)
@@ -83,19 +83,11 @@ def viterbi(transitionPath, estimatePath, observationPath):
     print result
 
 if __name__ == "__main__":
-    """ transitionPath = "./transition_matrix.txt"
-    estimatePath = "./estimate_matrix.txt"
-    observationPath = "./observations.txt"
-    viterbi(transitionPath, estimatePath, observationPath)
-    forward(transitionPath, estimatePath, observationPath) """
 
-    first  = sys.argv[1]
-    second = "./" + sys.argv[2]
-    third  = "./" + sys.argv[3]
-    fourth = "./" + sys.argv[4]
+    function  = sys.argv[1]
+    transitionPath = "./" + sys.argv[2]
+    estimatePath  = "./" + sys.argv[3]
+    observationPath = "./" + sys.argv[4]
 
-    transitionPath = second
-    estimatePath = third
-    observationPath = fourth
-    if(first == "viterbi") : viterbi(second, third, fourth)
-    if(first == "forward") : forward(second, third, fourth)
+    if(function == "viterbi") : viterbi(transitionPath, estimatePath, observationPath)
+    if(function == "forward") : forward(transitionPath, estimatePath, observationPath)
