@@ -66,11 +66,7 @@ class MyKMeans:
                 distArr = distance.cdist([X[i]], self.cluster_centers, 'euclidean')
                 minIndex = np.argmin(distArr[0])
                 self.labels[i] = minIndex
-            
-            
-            
-            for i in range(len(self.cluster_centers)):     
-                
+            for i in range(len(self.cluster_centers)):            
                 sumVal = np.zeros((self.cluster_centers.shape[1]))
                 number = 0
                 for j in range(X.shape[0]):
@@ -83,16 +79,14 @@ class MyKMeans:
                 newCent = sumVal / float(number)
                 temp[i] = newCent
 
-
-
+            #if np.sqrt(np.sum((self.cluster_centers - temp)**2)) < EPSILON:
 
             if np.linalg.norm(self.cluster_centers - temp) < EPSILON:
-                self.cluster_centers = np.array(temp)
                 break
-            self.cluster_centers = np.array(temp)
+            else:
+                self.cluster_centers = np.array(temp)
 
         return self
-
 
     def initialize(self, X):
         """ Initialize centroids according to self.init_method
@@ -113,7 +107,6 @@ class MyKMeans:
             for i in randNumArray:
                 array[j] = X[i]
                 j = j+1
-        
 
         if(self.init_method == "kmeans++"):
             array = []
@@ -123,9 +116,7 @@ class MyKMeans:
             for i in range(self.n_clusters-1):
                 eucSum = 0
                 eucMax = 0
-                flag = 0
                 for j in X:
-                    flag = 1
                     if j.tolist() in array:
                         continue
                     distArr = distance.cdist([j], array, 'euclidean')
@@ -134,31 +125,14 @@ class MyKMeans:
                         array2 = j.tolist()
                         eucMax = eucSum
 
-                if(flag == 1):
-                    array.append(array2)
-                    
-        self.cluster_centers = np.array(array,dtype=float)
+                array.append(array2)
 
-        """ elif self.init_method == "kmeans++":
-            temp = self.random_state.randint(len(X))
-            self.cluster_centers.append(X[temp].tolist())
-            for i in range(1,self.n_clusters):
-                distances = np.sum(sp.cdist(self.cluster_centers,X),axis=0)
-                length = distances.shape[0]
-                dist = np.argsort(distances)[length-65:length]
-                dist = dist[::-1]
-                for j in range(64):
-                    index = dist[j]
-                    if X[index].tolist() not in self.cluster_centers:
-                        break
-                #index = np.argmax(distances)
-                self.cluster_centers.append(X[index].tolist()) """
-
-
+        if(self.init_method != "manual"):       
+            self.cluster_centers = np.array(array,dtype=float)
 
         return self.cluster_centers
-
-
+                    
+        
 
     def predict(self, X):
         """Predict the closest cluster each sample in X belongs to.
@@ -207,8 +181,7 @@ if __name__ == "__main__":
         print kmeans.initialize(X)
         # [[4. 4.]
         #  [1. 0.]]
-        #kmeans = MyKMeans(n_clusters=2, random_state=0, init_method = 'random')
-        kmeans = MyKMeans(n_clusters=5, random_state=0, init_method = 'kmeans++')
+        kmeans = MyKMeans(n_clusters=2, random_state=0, init_method = 'random')
         print kmeans.initialize(X)
         # [[4. 0.]
         #  [1. 0.]]
