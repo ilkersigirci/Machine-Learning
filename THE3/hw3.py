@@ -85,9 +85,9 @@ def viterbi(transitionPath, estimatePath, observationPath):
 if __name__ == "__main__":
 
     function  = sys.argv[1]
-    transitionPath = "./" + sys.argv[2]
-    estimatePath  = "./" + sys.argv[3]
-    observationPath = "./" + sys.argv[4]
+    transitionPath = sys.argv[2]
+    estimatePath  = sys.argv[3]
+    observationPath = sys.argv[4]
 
     if(function == "viterbi") : viterbi(transitionPath, estimatePath, observationPath)
     if(function == "forward") : forward(transitionPath, estimatePath, observationPath)
